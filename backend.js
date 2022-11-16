@@ -21,13 +21,17 @@ module.exports = async (payload, context) => {
 
   delete updatedResults.fields.resultId;
 
-  // 4) Combine user answers with newly calculated current results
+  // 4) Get results as percentages of all votes
+  const updatedResultsAsPercentage = calcResultsAsPercentage(updatedResults.fields);
+
+  // 5) Combine user answers with newly calculated current results
   const userSubmission = {
     ...context.params.payload,
-    ...updatedResults.fields,
+    ...updatedResultsAsPercentage,
+    totalVotes: updatedResults.fields.totalVotes,
   };
 
-  // 5) Submit user answers along with newly calculated results
+  // 6) Submit user answers along with newly calculated results
   const submittedUserData = await lib.airtable.query["@1.0.0"].insert({
     baseId: `appatwN6c5rbcIaLA`,
     table: `qatarTriviaSubmissions`,
@@ -37,6 +41,16 @@ module.exports = async (payload, context) => {
 
   return submittedUserData.rows[0].fields;
 };
+
+function calcResultsAsPercentage(results) {
+  const resultsAsPercentage = {};
+  for (const [key, value] of Object.entries(results)) {
+    if (key.includes("answer")) {
+      resultsAsPercentage[key] = Math.round((value / results.totalVotes) * 100);
+    }
+  }
+  return resultsAsPercentage;
+}
 
 function calcNewCurrentResults(userAnswers, currentResults) {
   const results = {};
