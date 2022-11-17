@@ -5,6 +5,9 @@
   Date: 2022/11/15
 */
 
+const COLLECTED_ANSWERS = {};
+const QUIZ_RADIO_QUESTIONS = 10;
+const ANSWER_KEY = "answer";
 const QUIZ_HERO_ID = "quiz-hero";
 const QUIZ_FORM_ID = "quiz-form";
 const QUIZ_LOADER_ID = "quiz-loader";
@@ -12,23 +15,32 @@ const QUIZ_RESULTS_ID = "quiz-results";
 const QUIZ_ERROR_ID = "quiz-error";
 const QUIZ_START_BUTTON_ID = "quiz-start-button";
 const QUIZ_QUESTIONS_ID = "quiz-questions";
-const QUIZ_RADIO_QUESTIONS = 10;
-const COLLECTED_ANSWERS = {};
+const QUIZ_CORRECT_ANSWERS_ID = "quiz-correct-answers";
+const QUIZ_POSITION_ID = "quiz-position";
+const QUIZ_TOTAL_VOTES_ID = "quiz-total-votes";
 
 /*
-  Functions related to handling obtained results
+  Functions related to using obtained results
 */
 
 function populateQuizResults(results) {
+  populateAnswers(results, ANSWER_KEY);
+  populateElement(QUIZ_CORRECT_ANSWERS_ID, results.totalCorrectAnswers);
+  populateElement(QUIZ_POSITION_ID, results.quizPosition);
+  populateElement(QUIZ_TOTAL_VOTES_ID, results.totalVotes);
+}
+
+function populateAnswers(results, answerKey) {
   for (const [key, value] of Object.entries(results)) {
-    if (key.includes("r-answer")) {
-      const element = document.querySelector(`#${key}`);
-      if (element) element.innerHTML = `${value} %`;
+    if (key.includes(`r-${answerKey}`)) {
+      populateElement(key, value, "%");
     }
   }
+}
 
-  const element = document.querySelector(`#totalVotes`);
-  if (element) element.innerHTML = results.totalVotes;
+function populateElement(elementId, value, symbol = "") {
+  const element = document.querySelector(`#${elementId}`);
+  if (element) element.innerHTML = `${value}${symbol}`;
 }
 
 /*
