@@ -6,7 +6,7 @@
 */
 
 const COLLECTED_ANSWERS = {};
-const QUIZ_RADIO_QUESTIONS = 10;
+const QUIZ_TOTAL_QUESTIONS = 10;
 const ANSWER_KEY = "answer";
 const QUIZ_HERO_ID = "quiz-hero";
 const QUIZ_FORM_ID = "quiz-form";
@@ -18,6 +18,8 @@ const QUIZ_QUESTIONS_ID = "quiz-questions";
 const QUIZ_CORRECT_ANSWERS_ID = "quiz-correct-answers";
 const QUIZ_POSITION_ID = "quiz-position";
 const QUIZ_TOTAL_VOTES_ID = "quiz-total-votes";
+const QUIZ_SHARE_TWITTER_ID = "quiz-share-twitter";
+const QUIZ_SHARE_FACEBOOK_ID = "quiz-share-facebook";
 
 /*
   Functions related to using obtained results
@@ -44,11 +46,11 @@ function populateElement(elementId, value, symbol = "") {
 }
 
 /*
-  Helper functions
+  Functions related to collecting user data
 */
 
 function collectQuizAnswers() {
-  for (let i = 1; i <= QUIZ_RADIO_QUESTIONS; i++) {
+  for (let i = 1; i <= QUIZ_TOTAL_QUESTIONS; i++) {
     const answerValue = document.querySelector(`input[name="answerQ${i}"]:checked`)?.value;
     COLLECTED_ANSWERS[`answerQ${i}`] = +answerValue;
   }
@@ -87,6 +89,7 @@ function verifyResponse(response) {
 function successResponse(response) {
   showElement(QUIZ_RESULTS_ID);
   populateQuizResults(response);
+  enableQuizSharing(response);
   hideElement(QUIZ_LOADER_ID);
 }
 
@@ -115,6 +118,40 @@ function scrollToElement(elementId) {
 }
 
 /*
+  Functions related to sharing quiz
+*/
+
+function enableQuizSharing(results) {
+  const shareFacebookButton = document.querySelector(`#${QUIZ_SHARE_FACEBOOK_ID}`);
+  shareFacebookButton.addEventListener("click", () => {
+    shareQuizOnFacebook();
+  });
+
+  const shareTwitterButton = document.querySelector(`#${QUIZ_SHARE_TWITTER_ID}`);
+  shareTwitterButton.addEventListener("click", () => {
+    shareQuizOnTwitter(results);
+  });
+}
+
+function shareQuizOnFacebook() {
+  const shareUrl = window.location.href;
+  // Haven't found how to share text as well
+  window.open(`https://facebook.com/share?url=${encodeURIComponent(shareUrl)}`);
+}
+
+function shareQuizOnTwitter(results) {
+  const shareUrl = window.location.href;
+  const shareText = `I took the Qatar 2022 World Cup trivia. With ${results.totalCorrectAnswers}/${QUIZ_TOTAL_QUESTIONS} answer correct, I did better than ${results.quizPosition}% of participants! Can you do better than me?`;
+  const shareTextTwitterLike = shareText
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/, "'");
+  window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTextTwitterLike).replace(/'/g, "%27")}`);
+}
+
+/*
   Functions related to handling quiz
 */
 
@@ -132,7 +169,7 @@ window.onload = () => {
     scrollToElement(QUIZ_FORM_ID);
   });
 
-  // Disable default form submit behaviour
+  // Disable default Webflow form submit behaviour
   const quizForm = $(`#${QUIZ_QUESTIONS_ID}`);
   quizForm.submit(function () {
     collectQuizAnswers();
