@@ -136,19 +136,19 @@ function enableQuizSharing(results) {
 function shareQuizOnFacebook() {
   const shareUrl = window.location.href;
   // Haven't found how to share text as well
-  window.open(`https://facebook.com/share?url=${encodeURIComponent(shareUrl)}`);
+  window.open(`https://facebook.com/sharer.php?u=${encodeURIComponent(shareUrl)}`);
 }
 
 function shareQuizOnTwitter(results) {
   const shareUrl = window.location.href;
-  const shareText = `I took the Qatar 2022 World Cup trivia. With ${results.totalCorrectAnswers}/${QUIZ_TOTAL_QUESTIONS} answer correct, I did better than ${results.quizPosition}% of participants! Can you do better than me?`;
+  const shareText = `I took the Qatar 2022 World Cup trivia. With ${results.totalCorrectAnswers}/${QUIZ_TOTAL_QUESTIONS} answer(s) correct, I did better than ${results.quizPosition}% of participants! Can you do better than me?`;
   const shareTextTwitterLike = shareText
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/, "'");
-  window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTextTwitterLike).replace(/'/g, "%27")}`);
+  window.open(`https://twitter.com/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTextTwitterLike).replace(/'/g, "%27")}`);
 }
 
 /*
