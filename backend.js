@@ -42,7 +42,7 @@ module.exports = async (payload, context) => {
   const totalCorrectAnswers = calcCorrectAnswers(submittedUserData.rows[0].fields, answerKey);
 
   // 7) Calculate quiz position
-  const quizPosition = 5;
+  const quizPosition = calcQuizPosition(totalCorrectAnswers);
 
   // 8) Return answers and stats
   return {
@@ -75,6 +75,34 @@ function calcCorrectAnswers(userData, answerKey) {
   }
 
   return totalCorrectAnswers;
+}
+
+function calcQuizPosition(totalCorrectAnswers) {
+  // For this stage, quiz position is not developed
+  switch (totalCorrectAnswers) {
+    case 1:
+      return 4;
+    case 2:
+      return 12;
+    case 3:
+      return 21;
+    case 4:
+      return 33;
+    case 5:
+      return 41;
+    case 6:
+      return 54;
+    case 7:
+      return 67;
+    case 8:
+      return 83;
+    case 9:
+      return 91;
+    case 10:
+      return 96;
+    default:
+      return 0;
+  }
 }
 
 function calcResultsAsPercentage(results, answerKey) {
