@@ -1,22 +1,33 @@
+/*
+  Webflow Quiz Script
+  Developed by: Sebastian Cortes (hello@nevolu.com)
+  Code owner: Sebastian Cortes (hello@nevolu.com)
+  Date: 2022/11/15
+*/
+
 module.exports = async (payload, context) => {
   const lib = require("lib")({ token: process.env.STDLIB_SECRET_TOKEN });
-  const answerKey = "answer";
+  const ANSWER_KEY = "answer";
+  const AIRTABLE_BASE_ID = "appatwN6c5rbcIaLA";
+  const AIRTABLE_RESULTS_TABLE = "qatarTriviaResults";
+  const AIRTABLE_RESULTS_TABLE_ROW_ID = "rec9hI4fDk920sFaV";
+  const AIRTABLE_SUBMISSIONS_TABLE = "qatarTriviaSubmissions";
 
   // 1) Get current results
   const currentResults = await lib.airtable.query["@1.0.0"].records.retrieve({
-    baseId: `appatwN6c5rbcIaLA`,
-    table: `qatarTriviaResults`,
-    id: `rec9hI4fDk920sFaV`,
+    baseId: AIRTABLE_BASE_ID,
+    table: AIRTABLE_RESULTS_TABLE,
+    id: AIRTABLE_RESULTS_TABLE_ROW_ID,
   });
 
   // 2) Based on user answers, calculate new current results
-  const newCurrentResults = calcNewCurrentResults(context.params.payload, currentResults.fields, answerKey);
+  const newCurrentResults = calcNewCurrentResults(context.params.payload, currentResults.fields, ANSWER_KEY);
 
   // 3) Update current results with newly calculate results
   const updatedResults = await lib.airtable.query["@1.0.0"].records.update({
-    baseId: `appatwN6c5rbcIaLA`,
-    table: `qatarTriviaResults`,
-    id: `rec9hI4fDk920sFaV`,
+    baseId: AIRTABLE_BASE_ID,
+    table: AIRTABLE_RESULTS_TABLE,
+    id: AIRTABLE_RESULTS_TABLE_ROW_ID,
     fields: { ...newCurrentResults },
   });
 
@@ -29,17 +40,17 @@ module.exports = async (payload, context) => {
   };
 
   const submittedUserData = await lib.airtable.query["@1.0.0"].insert({
-    baseId: `appatwN6c5rbcIaLA`,
-    table: `qatarTriviaSubmissions`,
+    baseId: AIRTABLE_BASE_ID,
+    table: AIRTABLE_SUBMISSIONS_TABLE,
     fieldsets: [{ ...userSubmission }],
     typecast: false,
   });
 
   // 5) Get results as percentages of all votes
-  const updatedResultsAsPercentage = calcResultsAsPercentage(submittedUserData.rows[0].fields, answerKey);
+  const updatedResultsAsPercentage = calcResultsAsPercentage(submittedUserData.rows[0].fields, ANSWER_KEY);
 
   // 6) Calculate # of correct answers
-  const totalCorrectAnswers = calcCorrectAnswers(submittedUserData.rows[0].fields, answerKey);
+  const totalCorrectAnswers = calcCorrectAnswers(submittedUserData.rows[0].fields, ANSWER_KEY);
 
   // 7) Calculate quiz position
   const quizPosition = calcQuizPosition(totalCorrectAnswers);

@@ -1,5 +1,5 @@
 /*
-  Footballer IQ Quiz Script
+  Webflow Quiz Script
   Developed by: Sebastian Cortes (hello@nevolu.com)
   Code owner: Sebastian Cortes (hello@nevolu.com)
   Date: 2022/11/15
@@ -8,13 +8,16 @@
 const COLLECTED_ANSWERS = {};
 const QUIZ_TOTAL_QUESTIONS = 10;
 const ANSWER_KEY = "answer";
-const QUIZ_HERO_ID = "quiz-hero";
-const QUIZ_FORM_ID = "quiz-form";
-const QUIZ_LOADER_ID = "quiz-loader";
-const QUIZ_RESULTS_ID = "quiz-results";
-const QUIZ_ERROR_ID = "quiz-error";
+const QUIZ_SECTION_HERO_ID = "quiz-section-hero";
+const QUIZ_SECTION_FORM_ID = "quiz-section-form";
+const QUIZ_SECTION_LOADER_ID = "quiz-section-loader";
+const QUIZ_SECTION_RESULTS_ID = "quiz-section-results";
+const QUIZ_SECTION_ERROR_ID = "quiz-section-error";
 const QUIZ_START_BUTTON_ID = "quiz-start-button";
+const QUIZ_FORM_ID = "quiz-form";
 const QUIZ_QUESTIONS_ID = "quiz-questions";
+const QUIZ_EMAIL_ID = "quiz-email";
+const QUIZ_CTA_ID = "quiz-cta";
 const QUIZ_CORRECT_ANSWERS_ID = "quiz-correct-answers";
 const QUIZ_POSITION_ID = "quiz-position";
 const QUIZ_TOTAL_VOTES_ID = "quiz-total-votes";
@@ -35,7 +38,7 @@ function populateQuizResults(results) {
 function populateAnswers(results, answerKey) {
   for (const [key, value] of Object.entries(results)) {
     if (key.includes(`r-${answerKey}`)) {
-      populateElement(key, value, "%");
+      populateElement(key, value, "% votes");
     }
   }
 }
@@ -87,29 +90,56 @@ function verifyResponse(response) {
 }
 
 function successResponse(response) {
-  showElement(QUIZ_RESULTS_ID);
+  showElement(QUIZ_SECTION_RESULTS_ID);
   populateQuizResults(response);
   enableQuizSharing(response);
-  hideElement(QUIZ_LOADER_ID);
+  hideElement(QUIZ_SECTION_LOADER_ID);
 }
 
 function errorResponse(error) {
-  showElement(QUIZ_ERROR_ID, "flex");
-  hideElement(QUIZ_LOADER_ID);
+  showElement(QUIZ_SECTION_ERROR_ID, "flex");
+  hideElement(QUIZ_SECTION_LOADER_ID);
 }
 
 /*
-  Functions related to UI elements display
+  Functions related to UI elements display / animations
 */
 
-function showElement(elementId, displayProperty = "block") {
-  const element = document.querySelector(`#${elementId}`);
-  element.style.display = displayProperty;
+function addQuestionsAnimations(elementId) {
+  const questionsParent = document.querySelector(`#${elementId}`);
+  const questionsList = Object.entries(questionsParent.children);
+  const questionsQuantity = questionsList.length;
+
+  for (const [key, question] of questionsList) {
+    // as last questions does not have next question
+    if (key === `${questionsQuantity - 1}`) continue;
+    const nextQuestion = questionsList[+key + 1][1];
+    onAnswerClickShowNextQuestion(question, nextQuestion);
+  }
+}
+
+function onAnswerClickShowNextQuestion(question, nextQuestion) {
+  const answers = question.querySelectorAll("input");
+  console.log(answers);
 }
 
 function hideElement(elementId) {
   const element = document.querySelector(`#${elementId}`);
   element.style.display = "none";
+}
+
+function hideQuestions(elementId) {
+  const questionsParent = document.querySelector(`#${elementId}`);
+  for (const [key, question] of Object.entries(questionsParent.children)) {
+    // as we want to show first question
+    if (key === "0") continue;
+    question.style.display = "none";
+  }
+}
+
+function showElement(elementId, displayProperty = "block") {
+  const element = document.querySelector(`#${elementId}`);
+  element.style.display = displayProperty;
 }
 
 function scrollToElement(elementId) {
@@ -156,27 +186,29 @@ function shareQuizOnTwitter(results) {
 */
 
 window.onload = () => {
-  console.log("Welcome to Footballer IQ...");
-
-  hideElement(QUIZ_FORM_ID);
-  hideElement(QUIZ_LOADER_ID);
-  hideElement(QUIZ_RESULTS_ID);
-  hideElement(QUIZ_ERROR_ID);
+  hideElement(QUIZ_SECTION_FORM_ID);
+  hideElement(QUIZ_SECTION_LOADER_ID);
+  hideElement(QUIZ_SECTION_RESULTS_ID);
+  hideElement(QUIZ_SECTION_ERROR_ID);
+  // hideElement(QUIZ_EMAIL_ID);
+  // hideElement(QUIZ_CTA_ID);
+  // hideQuestions(QUIZ_QUESTIONS_ID);
+  // addQuestionsAnimations(QUIZ_QUESTIONS_ID);
 
   const quizStartButton = document.querySelector(`#${QUIZ_START_BUTTON_ID}`);
   quizStartButton.addEventListener("click", () => {
-    showElement(QUIZ_FORM_ID);
-    scrollToElement(QUIZ_FORM_ID);
+    showElement(QUIZ_SECTION_FORM_ID);
+    scrollToElement(QUIZ_SECTION_FORM_ID);
   });
 
   // Disable default Webflow form submit behaviour
-  const quizForm = $(`#${QUIZ_QUESTIONS_ID}`);
+  const quizForm = $(`#${QUIZ_FORM_ID}`);
   quizForm.submit(function () {
     collectQuizAnswers();
     collectEmail();
-    showElement(QUIZ_LOADER_ID, "flex");
-    hideElement(QUIZ_HERO_ID);
-    hideElement(QUIZ_FORM_ID);
+    showElement(QUIZ_SECTION_LOADER_ID, "flex");
+    hideElement(QUIZ_SECTION_HERO_ID);
+    hideElement(QUIZ_SECTION_FORM_ID);
     submitQuizData();
     return false;
   });
