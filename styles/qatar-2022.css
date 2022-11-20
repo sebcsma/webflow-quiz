@@ -1,0 +1,82 @@
+.qtr-quiz-cta-btn--white {
+  position: relative;
+  text-align: center;
+  background: transparent;
+  border-width: 0;
+  border-style: solid;
+  padding: 16px 32px;
+  text-decoration: none;
+  border-color: white;
+  color: #8a1538;
+}
+.qtr-quiz-cta-btn--white, .qtr-quiz-cta-btn--white *:hover {
+  cursor: pointer;
+}
+.qtr-quiz-cta-btn--white span {
+  z-index: 10;
+  position: relative;
+}
+.qtr-quiz-cta-btn--white::before, .qtr-quiz-cta-btn--white::after {
+  content: '';
+  position: absolute;
+  border-color: inherit;
+  border-style: inherit;
+  height: 47%;
+  width: 100%;
+  left: 0;
+  z-index: 5;
+  background-color: white;
+}
+.qtr-quiz-cta-btn--white::before {
+  border-width: 2px 2px 0 2px;
+  top: 0;
+  transform-origin: center bottom;
+  transform: perspective(0.5rem) rotateX(3deg);
+}
+.qtr-quiz-cta-btn--white::after {
+  border-width: 0 2px 2px 2px;
+  bottom: 0;
+  transform-origin: center top;
+  transform: perspective(0.5rem) rotateX(-3deg);
+}
+.qtr-quiz-cta-btn--primary {
+  position: relative;
+  text-align: center;
+  background: transparent;
+  border-width: 0;
+  border-style: solid;
+  padding: 16px 32px;
+  text-decoration: none;
+  border-color: #8a1538;
+  color: white;
+}
+.qtr-quiz-cta-btn--primary, .qtr-quiz-cta-btn--primary *:hover {
+  cursor: pointer;
+}
+.qtr-quiz-cta-btn--primary span {
+  z-index: 10;
+  position: relative;
+}
+.qtr-quiz-cta-btn--primary::before, .qtr-quiz-cta-btn--primary::after {
+  content: '';
+  position: absolute;
+  border-color: inherit;
+  border-style: inherit;
+  height: 47%;
+  width: 100%;
+  left: 0;
+  z-index: 5;
+  background-color: #8a1538;
+}
+.qtr-quiz-cta-btn--primary::before {
+  border-width: 2px 2px 0 2px;
+  top: 0;
+  transform-origin: center bottom;
+  transform: perspective(0.5rem) rotateX(3deg);
+}
+.qtr-quiz-cta-btn--primary::after {
+  border-width: 0 2px 2px 2px;
+  bottom: 0;
+  transform-origin: center top;
+  transform: perspective(0.5rem) rotateX(-3deg);
+}

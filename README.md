@@ -1,5 +1,8 @@
-# Footballer IQ
+# Webflow Quiz
 
 ## Code Ownership
-* Developed by: Sebastian Cortes (sebcsma@gmail.com)
-* Date started: 2022/11/12
+
+- Webflow Quiz Script
+- Developed by: Sebastian Cortes (hello@nevolu.com)
+- Code owner: Sebastian Cortes (hello@nevolu.com)
+- Date: 2022/11/15
