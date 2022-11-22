@@ -67,16 +67,16 @@ module.exports = async (payload, context) => {
 function calcCorrectAnswers(userData, answerKey) {
   let totalCorrectAnswers = 0;
   const correctAnswers = {
-    [`${answerKey}Q1`]: 4,
-    [`${answerKey}Q2`]: 4,
-    [`${answerKey}Q3`]: 4,
+    [`${answerKey}Q1`]: 3,
+    [`${answerKey}Q2`]: 2,
+    [`${answerKey}Q3`]: 2,
     [`${answerKey}Q4`]: 4,
-    [`${answerKey}Q5`]: 4,
-    [`${answerKey}Q6`]: 4,
-    [`${answerKey}Q7`]: 4,
+    [`${answerKey}Q5`]: 2,
+    [`${answerKey}Q6`]: 1,
+    [`${answerKey}Q7`]: 3,
     [`${answerKey}Q8`]: 4,
-    [`${answerKey}Q9`]: 4,
-    [`${answerKey}Q10`]: 4,
+    [`${answerKey}Q9`]: 3,
+    [`${answerKey}Q10`]: 3,
   };
 
   for (const [key, value] of Object.entries(userData)) {

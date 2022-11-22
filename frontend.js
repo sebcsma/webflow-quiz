@@ -5,9 +5,11 @@
   Date: 2022/11/15
 */
 
+const ANSWER_KEY = "answer";
+const ANSWER_CLASS_WRONG = "c-wrong";
+const ANSWER_CLASS_CHOSEN = "c-chosen";
 const COLLECTED_ANSWERS = {};
 const QUIZ_TOTAL_QUESTIONS = 10;
-const ANSWER_KEY = "answer";
 const QUIZ_SECTION_HERO_ID = "quiz-section-hero";
 const QUIZ_SECTION_FORM_ID = "quiz-section-form";
 const QUIZ_SECTION_LOADER_ID = "quiz-section-loader";
@@ -91,6 +93,7 @@ function verifyResponse(response) {
 
 function successResponse(response) {
   showElement(QUIZ_SECTION_RESULTS_ID);
+  highlightUserAnswers(response);
   populateQuizResults(response);
   enableQuizSharing(response);
   hideElement(QUIZ_SECTION_LOADER_ID);
@@ -134,6 +137,17 @@ function hideQuestions(elementId) {
     // as we want to show first question
     if (key === "0") continue;
     question.style.display = "none";
+  }
+}
+
+function highlightUserAnswers(answers) {
+  for (var i = 1; i <= QUIZ_TOTAL_QUESTIONS; i++) {
+    const answerValue = answers[`answerQ${i}`];
+    const element = document.querySelector(`#answerQ${i}A${answerValue}`);
+    if (Object.values(element.classList).includes(ANSWER_CLASS_WRONG)) {
+      element.classList.remove(ANSWER_CLASS_WRONG);
+      element.classList.add(ANSWER_CLASS_CHOSEN);
+    }
   }
 }
 
