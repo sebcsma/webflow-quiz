@@ -92,71 +92,82 @@ function verifyResponse(response) {
 }
 
 function successResponse(response) {
-  showElement(QUIZ_SECTION_RESULTS_ID);
+  showElementById(QUIZ_SECTION_RESULTS_ID);
   highlightUserAnswers(response);
   populateQuizResults(response);
   enableQuizSharing(response);
-  hideElement(QUIZ_SECTION_LOADER_ID);
+  hideElementById(QUIZ_SECTION_LOADER_ID);
 }
 
 function errorResponse(error) {
-  showElement(QUIZ_SECTION_ERROR_ID, "flex");
-  hideElement(QUIZ_SECTION_LOADER_ID);
+  showElementById(QUIZ_SECTION_ERROR_ID, "flex");
+  hideElementById(QUIZ_SECTION_LOADER_ID);
 }
 
 /*
   Functions related to UI elements display / animations
 */
 
-function addQuestionsAnimations(elementId) {
-  const questionsParent = document.querySelector(`#${elementId}`);
-  const questionsList = Object.entries(questionsParent.children);
-  const questionsQuantity = questionsList.length;
-
-  for (const [key, question] of questionsList) {
-    // as last questions does not have next question
-    if (key === `${questionsQuantity - 1}`) continue;
-    const nextQuestion = questionsList[+key + 1][1];
-    onAnswerClickShowNextQuestion(question, nextQuestion);
+function getQuestions() {
+  const questionsList = [];
+  for (var i = 1; i <= QUIZ_TOTAL_QUESTIONS; i++) {
+    const question = document.querySelector(`#question${i}`);
+    questionsList.push(question);
   }
+  return questionsList;
 }
 
-function onAnswerClickShowNextQuestion(question, nextQuestion) {
-  const answers = question.querySelectorAll("input");
-  console.log(answers);
-}
-
-function hideElement(elementId) {
-  const element = document.querySelector(`#${elementId}`);
-  element.style.display = "none";
-}
-
-function hideQuestions(elementId) {
-  const questionsParent = document.querySelector(`#${elementId}`);
-  for (const [key, question] of Object.entries(questionsParent.children)) {
-    // as we want to show first question
-    if (key === "0") continue;
-    question.style.display = "none";
-  }
+function addQuestionsAnimations(questions) {
+  questions.forEach((question, index) => {
+    const questionAnswers = question.querySelectorAll("li");
+    questionAnswers.forEach((answer) => {
+      // As last question goes to Email
+      if (index + 1 === questions.length) {
+        answer.addEventListener("click", () => {
+          showElementById(QUIZ_EMAIL_ID);
+          showElementById(QUIZ_CTA_ID);
+          scrollToElementById(QUIZ_EMAIL_ID);
+        });
+      } else {
+        answer.addEventListener("click", () => {
+          const nextQuestion = questions[index + 1];
+          nextQuestion.style.display = "block";
+          nextQuestion.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+    });
+  });
 }
 
 function highlightUserAnswers(answers) {
   for (var i = 1; i <= QUIZ_TOTAL_QUESTIONS; i++) {
     const answerValue = answers[`answerQ${i}`];
-    const element = document.querySelector(`#answerQ${i}A${answerValue}`);
-    if (Object.values(element.classList).includes(ANSWER_CLASS_WRONG)) {
-      element.classList.remove(ANSWER_CLASS_WRONG);
-      element.classList.add(ANSWER_CLASS_CHOSEN);
+    const answer = document.querySelector(`#answerQ${i}A${answerValue}`);
+    if (Object.values(answer.classList).includes(ANSWER_CLASS_WRONG)) {
+      answer.classList.remove(ANSWER_CLASS_WRONG);
+      answer.classList.add(ANSWER_CLASS_CHOSEN);
     }
   }
 }
 
-function showElement(elementId, displayProperty = "block") {
+function hideQuestions(questions) {
+  questions.forEach((question, index) => {
+    if (index === 0) return; // as we want to show first question
+    question.style.display = "none";
+  });
+}
+
+function hideElementById(elementId) {
+  const element = document.querySelector(`#${elementId}`);
+  element.style.display = "none";
+}
+
+function showElementById(elementId, displayProperty = "block") {
   const element = document.querySelector(`#${elementId}`);
   element.style.display = displayProperty;
 }
 
-function scrollToElement(elementId) {
+function scrollToElementById(elementId) {
   const element = document.querySelector(`#${elementId}`);
   element.scrollIntoView({ behavior: "smooth" });
 }
@@ -200,19 +211,19 @@ function shareQuizOnTwitter(results) {
 */
 
 window.onload = () => {
-  hideElement(QUIZ_SECTION_FORM_ID);
-  hideElement(QUIZ_SECTION_LOADER_ID);
-  hideElement(QUIZ_SECTION_RESULTS_ID);
-  hideElement(QUIZ_SECTION_ERROR_ID);
-  // hideElement(QUIZ_EMAIL_ID);
-  // hideElement(QUIZ_CTA_ID);
-  // hideQuestions(QUIZ_QUESTIONS_ID);
-  // addQuestionsAnimations(QUIZ_QUESTIONS_ID);
+  hideElementById(QUIZ_SECTION_FORM_ID);
+  hideElementById(QUIZ_SECTION_LOADER_ID);
+  hideElementById(QUIZ_SECTION_RESULTS_ID);
+  hideElementById(QUIZ_SECTION_ERROR_ID);
+  hideElementById(QUIZ_EMAIL_ID);
+  hideElementById(QUIZ_CTA_ID);
+  hideQuestions(getQuestions());
+  addQuestionsAnimations(getQuestions());
 
   const quizStartButton = document.querySelector(`#${QUIZ_START_BUTTON_ID}`);
   quizStartButton.addEventListener("click", () => {
-    showElement(QUIZ_SECTION_FORM_ID);
-    scrollToElement(QUIZ_SECTION_FORM_ID);
+    showElementById(QUIZ_SECTION_FORM_ID);
+    scrollToElementById(QUIZ_SECTION_FORM_ID);
   });
 
   // Disable default Webflow form submit behaviour
@@ -220,9 +231,9 @@ window.onload = () => {
   quizForm.submit(function () {
     collectQuizAnswers();
     collectEmail();
-    showElement(QUIZ_SECTION_LOADER_ID, "flex");
-    hideElement(QUIZ_SECTION_HERO_ID);
-    hideElement(QUIZ_SECTION_FORM_ID);
+    showElementById(QUIZ_SECTION_LOADER_ID, "flex");
+    hideElementById(QUIZ_SECTION_HERO_ID);
+    hideElementById(QUIZ_SECTION_FORM_ID);
     submitQuizData();
     return false;
   });
