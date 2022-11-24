@@ -20,6 +20,8 @@ const QUIZ_FORM_ID = "quiz-form";
 const QUIZ_QUESTIONS_ID = "quiz-questions";
 const QUIZ_EMAIL_ID = "quiz-email";
 const QUIZ_CTA_ID = "quiz-cta";
+const QUIZ_CTA_BUTTON_ID = "quiz-cta-button";
+const QUIZ_META_ID = "quiz-meta";
 const QUIZ_CORRECT_ANSWERS_ID = "quiz-correct-answers";
 const QUIZ_POSITION_ID = "quiz-position";
 const QUIZ_TOTAL_VOTES_ID = "quiz-total-votes";
@@ -126,6 +128,7 @@ function addQuestionsAnimations(questions) {
         answer.addEventListener("click", () => {
           showElementById(QUIZ_EMAIL_ID);
           showElementById(QUIZ_CTA_ID);
+          showElementById(QUIZ_META_ID);
           scrollToElementById(QUIZ_EMAIL_ID);
         });
       } else {
@@ -217,6 +220,7 @@ window.onload = () => {
   hideElementById(QUIZ_SECTION_ERROR_ID);
   hideElementById(QUIZ_EMAIL_ID);
   hideElementById(QUIZ_CTA_ID);
+  hideElementById(QUIZ_META_ID);
   hideQuestions(getQuestions());
   addQuestionsAnimations(getQuestions());
 
